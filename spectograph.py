@@ -55,27 +55,53 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
     sshow, freq = logscale_spec(s, factor=1.0, sr=samplerate)
     ims = 20.*np.log10(np.abs(sshow)/10e-6) # amplitude to decibel
     
+#    dfreq = []
+#    for i in range(1, len(freq)):
+#        dfreq.append(freq[i] - freq[i-1])
+#    print dfreq
+    
+    print np.shape(ims)
+    
     timebins, freqbins = np.shape(ims)
     
-    plt.figure(figsize=(15, 7.5))
-    plt.imshow(np.transpose(ims), origin="lower", aspect="auto", cmap=colormap, interpolation="none")
-    plt.colorbar()
-
-    plt.xlabel("time (s)")
-    plt.ylabel("frequency (hz)")
-    plt.xlim([0, timebins-1])
-    plt.ylim([0, freqbins])
-
-    xlocs = np.float32(np.linspace(0, timebins-1, 5))
-    plt.xticks(xlocs, ["%.02f" % l for l in ((xlocs*len(samples)/timebins)+(0.5*binsize))/samplerate])
-    ylocs = np.int16(np.round(np.linspace(0, freqbins-1, 10)))
-    plt.yticks(ylocs, ["%.02f" % freq[i] for i in ylocs])
+    new_ims = []
     
-    if plotpath:
-        plt.savefig(plotpath, bbox_inches="tight")
-    else:
-        plt.show()
-        
-    plt.clf()
+    for i in range(len(ims)):
+        maximum = 0
+        maximum_index = 0
+        #print ims[i]
+        val1 = [(j+1)*ims[i][j] for j in range(len(ims[i]))]
+        val1 = sum(val1) / sum(ims[i])
+        for j in range(len(ims[i])):
+            if ims[i][j] > maximum:
+                maximum = ims[i][j]
+                maximum_index = j
+#        val = [j for j in range(len(ims[i])) ims[i][j] == max(ims[i])]
+        new_ims.append((j*9 + val1) / 10)
+#        new_ims.append(val1)
+    print len(new_ims)
+    plt.plot(new_ims[:200])
+    plt.show()    
+#    plt.figure(figsize=(15, 7.5))
+#    plt.imshow(np.transpose(ims), origin="lower", aspect="auto", cmap=colormap, interpolation="none")
+#    plt.colorbar()
 
-plotstft("speech.wav")
+#    plt.xlabel("time (s)")
+#    plt.ylabel("frequency (hz)")
+#    plt.xlim([0, timebins-1])
+#    plt.ylim([0, freqbins])
+
+#    xlocs = np.float32(np.linspace(0, timebins-1, 5))
+#    plt.xticks(xlocs, ["%.02f" % l for l in ((xlocs*len(samples)/timebins)+(0.5*binsize))/samplerate])
+#    ylocs = np.int16(np.round(np.linspace(0, freqbins-1, 10)))
+#    plt.yticks(ylocs, ["%.02f" % freq[i] for i in ylocs])
+#    
+#    if plotpath:
+#        plt.savefig(plotpath, bbox_inches="tight")
+#    else:
+#        plt.show()
+#        
+#    plt.clf()
+
+plotstft("speech/speech_anil.wav")
+#plotstft("song/song_ring1.wav")
