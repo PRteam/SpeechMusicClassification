@@ -3,8 +3,10 @@ from matplotlib import pyplot as plt
 import scipy.io.wavfile as wav
 from numpy.lib import stride_tricks
 
-""" short time fourier transform of audio signal """
+
 def stft(sig, frameSize, overlapFac=0.5, window=np.hanning):
+
+    """ short time fourier transform of audio signal """
     win = window(frameSize)
     hopSize = int(frameSize - np.floor(overlapFac * frameSize))
     
@@ -20,8 +22,10 @@ def stft(sig, frameSize, overlapFac=0.5, window=np.hanning):
     
     return np.fft.rfft(frames)    
     
-""" scale frequency axis logarithmically """    
+
 def logscale_spec(spec, sr=44100, factor=20.):
+
+    """ scale frequency axis logarithmically """    
     timebins, freqbins = np.shape(spec)
 
     scale = np.linspace(0, 1, freqbins) ** factor
@@ -47,20 +51,18 @@ def logscale_spec(spec, sr=44100, factor=20.):
     
     return newspec, freqs
 
-""" plot spectrogram"""
+
 def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
+    
+    """ plot spectrogram"""
     samplerate, samples = wav.read(audiopath)
     s = stft(samples, binsize)
     
     sshow, freq = logscale_spec(s, factor=1.0, sr=samplerate)
     ims = 20.*np.log10(np.abs(sshow)/10e-6) # amplitude to decibel
     
-#    dfreq = []
-#    for i in range(1, len(freq)):
-#        dfreq.append(freq[i] - freq[i-1])
-#    print dfreq
-    
-    print np.shape(ims)
+    ims = ims[1:500,:]
+#    print np.shape(ims)
     
     timebins, freqbins = np.shape(ims)
     
@@ -76,12 +78,9 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
             if ims[i][j] > maximum:
                 maximum = ims[i][j]
                 maximum_index = j
-#        val = [j for j in range(len(ims[i])) ims[i][j] == max(ims[i])]
         new_ims.append((j*9 + val1) / 10)
-#        new_ims.append(val1)
-    print len(new_ims)
-    plt.plot(new_ims[:200])
-    plt.show()    
+    new_ims = np.array(new_ims)
+    return [new_ims.max(), new_ims.min(), new_ims.mean()]  
 #    plt.figure(figsize=(15, 7.5))
 #    plt.imshow(np.transpose(ims), origin="lower", aspect="auto", cmap=colormap, interpolation="none")
 #    plt.colorbar()
@@ -100,8 +99,16 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
 #        plt.savefig(plotpath, bbox_inches="tight")
 #    else:
 #        plt.show()
-#        
 #    plt.clf()
-
-plotstft("speech/speech_anil.wav")
-#plotstft("song/song_ring1.wav")
+for name in range(1,9):
+    try:
+        value = plotstft("data/song/" + str(name) + ".wav")
+        print value[0], value[1]
+        value = value[2]
+        print value
+        if value <= 487 and value >= 485:
+            print "speech"
+        else:
+            print "song"
+    except:
+        print "skipping badly"
