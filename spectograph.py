@@ -104,9 +104,9 @@ for name in range(1,9):
     try:
         value = plotstft("data/song/" + str(name) + ".wav")
         print value[0], value[1]
-        value = value[2]
+        value = value[0] - value[1]
         print value
-        if value <= 487 and value >= 485:
+        if value >= 1:
             print "speech"
         else:
             print "song"
