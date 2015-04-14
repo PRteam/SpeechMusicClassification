@@ -61,7 +61,7 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
     sshow, freq = logscale_spec(s, factor=1.0, sr=samplerate)
     ims = 20.*np.log10(np.abs(sshow)/10e-6) # amplitude to decibel
     
-    ims = ims[1:500,:]
+    ims = ims[1:2000,:]
 #    print np.shape(ims)
     
     timebins, freqbins = np.shape(ims)
@@ -106,7 +106,7 @@ for name in range(1,9):
         print value[0], value[1]
         value = value[0] - value[1]
         print value
-        if value >= 1:
+        if value >= 1 and value <= 2.5:
             print "speech"
         else:
             print "song"
