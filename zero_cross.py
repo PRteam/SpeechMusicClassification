@@ -6,33 +6,50 @@ import math
 
 TYPE = "song"
 
-#sampFreq, snd = wavfile.read('speech/speech_anil.wav')
-sampFreq, snd = wavfile.read('music2.wav')
-#This part of the code calculates zero detection error
-#cnt = 0
-#~ for i in xrange(1, len(snd)):
-#	~ if (snd[i] < 0  and snd[i-1] > 0) or (snd[i] > 0 and snd[i-1] < 0):
-#		~ cnt += 1		
-#~ print cnt
-
-cnt = [0]
-k = -1
-snd = snd[:, 0]
-for i in xrange(1, len(snd), 2):
-    if (snd[i] < 0  and snd[i-1] > 0) or (snd[i] > 0 and snd[i-1] < 0):
-        cnt[k] += 1
-    if i % 1000 == 1:
-        k += 1
-        cnt.append(0)
-
-sum_sq = sum([(i**2) for i in cnt])
-std = sum_sq / (k*1.0)
-std = math.sqrt(std)
-
-plt.hist(cnt)
-plt.show()
-print TYPE, std
-
+for j in xrange(1,18):
+	
+	#sampFreq, snd = wavfile.read('/home/srinidhi/Downloads/speech/'+str(j)+'.wav')
+	sampFreq, snd = wavfile.read('../data/speech/'+str(j) +'.wav')
+	#sampFreq, snd = wavfile.read('../data/speech/'+str(j) +'.wav')
+	#sampFreq, snd = wavfile.read('../Dataset/song/song_ring5.wav')
+	#sampFreq, snd = wavfile.read('../Dataset/speech/speech_vasanth.wav')
+	#, snd = wavfile.read('../data/speech/6.wav')
+	#This part of the code calculates zero detection error
+	
+	flag = 0
+	try :
+		snd = snd[:, 0]
+	except :
+		flag = 1
+		
+	aver = np.mean(snd)
+	mini = np.min(snd)
+	maxi = np.max(snd)
+		
+	cnt = 0
+	for i in xrange(1, len(snd),2):
+		if (snd[i] < aver  and snd[i-1] > aver) or (snd[i] > aver and snd[i-1] < aver):
+			cnt += 1		
+	print cnt*1000 / len(snd)
+	
+	'''
+	cnt = [0]
+	k = -1
+	print mini,maxi,aver
+	for i in xrange(1, len(snd), 2):
+	    if (snd[i] < aver  and snd[i-1] > aver) or (snd[i] > aver and snd[i-1] < aver):
+		        cnt[k] += 1
+	    if i % 1000 == 1:
+	        k += 1
+        	cnt.append(0)
+			sum_sq = sum([(i**2) for i in cnt])
+	std = sum_sq / (k*1.0)
+	std = math.sqrt(std)
+	
+	plt.hist(cnt)
+	plt.show()
+	'''
+	
 
 #~ Plot to obtain freq domain
 
